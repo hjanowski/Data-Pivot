@@ -429,6 +429,7 @@
         /* Left Panel Sections */
         .panel-section {
             margin-bottom: 32px;
+            position: relative;
         }
 
         .panel-section:last-child {
@@ -464,6 +465,82 @@
             fill: #0176d3;
             cursor: pointer;
             margin-left: auto;
+            transition: all 0.2s ease;
+        }
+
+        .add-icon:hover {
+            fill: #0550d9;
+            transform: scale(1.1);
+        }
+
+        /* Fields Dropdown */
+        .fields-dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #dddbda;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .dropdown-content.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 8px 12px;
+            font-size: 12px;
+            color: #080707;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dropdown-item:hover {
+            background: #f8f9fa;
+        }
+
+        .dropdown-item.expandable {
+            font-weight: 500;
+        }
+
+        .expand-arrow {
+            width: 12px;
+            height: 12px;
+            fill: #706e6b;
+            transition: transform 0.2s ease;
+        }
+
+        .expand-arrow.expanded {
+            transform: rotate(90deg);
+        }
+
+        .dropdown-subitem {
+            padding: 6px 12px 6px 24px;
+            font-size: 11px;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #fafafa;
+            border-left: 2px solid #e0e0e0;
+        }
+
+        .dropdown-subitem:hover {
+            background: #e3f2fd;
+            color: #0550d9;
+            border-left-color: #0550d9;
         }
 
         /* Field Lists */
@@ -646,6 +723,20 @@
             background: #0446c7;
             box-shadow: 0 4px 12px rgba(5, 80, 217, 0.4);
         }
+
+        /* Added Fields Section */
+        .added-fields {
+            margin-top: 16px;
+        }
+
+        .added-fields-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #706e6b;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
     </style>
 </head>
 <body>
@@ -796,9 +887,75 @@
                                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
                             </svg>
                             <span class="section-title">Fields</span>
-                            <svg class="add-icon" viewBox="0 0 24 24">
+                            <svg class="add-icon" viewBox="0 0 24 24" onclick="toggleFieldsDropdown()">
                                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
                             </svg>
+                        </div>
+                        
+                        <!-- Fields Dropdown -->
+                        <div class="fields-dropdown">
+                            <div class="dropdown-content" id="fieldsDropdown">
+                                <div class="dropdown-item expandable" onclick="toggleExpand(this, 'campaign')">
+                                    Campaign
+                                    <svg class="expand-arrow" viewBox="0 0 24 24">
+                                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                    </svg>
+                                </div>
+                                <div class="campaign-subitems" style="display: none;">
+                                    <div class="dropdown-subitem" onclick="addField('Campaign Advertiser')">Campaign Advertiser</div>
+                                    <div class="dropdown-subitem" onclick="addField('Campaign Budget')">Campaign Budget</div>
+                                    <div class="dropdown-subitem" onclick="addField('Campaign Category')">Campaign Category</div>
+                                    <div class="dropdown-subitem" onclick="addField('Campaign Start Date')">Campaign Start Date</div>
+                                    <div class="dropdown-subitem" onclick="addField('Campaign End Date')">Campaign End Date</div>
+                                    <div class="dropdown-subitem" onclick="addField('Campaign Name')">Campaign Name</div>
+                                    <div class="dropdown-subitem" onclick="addField('Campaign Objective')">Campaign Objective</div>
+                                    <div class="dropdown-subitem" onclick="addField('Campaign Status')">Campaign Status</div>
+                                </div>
+                                
+                                <div class="dropdown-item expandable" onclick="toggleExpand(this, 'site')">
+                                    Site
+                                    <svg class="expand-arrow" viewBox="0 0 24 24">
+                                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                    </svg>
+                                </div>
+                                <div class="site-subitems" style="display: none;">
+                                    <div class="dropdown-subitem" onclick="addField('Site URL')">Site URL</div>
+                                    <div class="dropdown-subitem" onclick="addField('Site Name')">Site Name</div>
+                                    <div class="dropdown-subitem" onclick="addField('Site Category')">Site Category</div>
+                                </div>
+                                
+                                <div class="dropdown-item expandable" onclick="toggleExpand(this, 'mediabuy')">
+                                    Media Buy
+                                    <svg class="expand-arrow" viewBox="0 0 24 24">
+                                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                    </svg>
+                                </div>
+                                <div class="mediabuy-subitems" style="display: none;">
+                                    <div class="dropdown-subitem" onclick="addField('Media Buy ID')">Media Buy ID</div>
+                                    <div class="dropdown-subitem" onclick="addField('Media Buy Name')">Media Buy Name</div>
+                                    <div class="dropdown-subitem" onclick="addField('Media Buy Type')">Media Buy Type</div>
+                                </div>
+                                
+                                <div class="dropdown-item expandable" onclick="toggleExpand(this, 'creative')">
+                                    Creative
+                                    <svg class="expand-arrow" viewBox="0 0 24 24">
+                                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                                    </svg>
+                                </div>
+                                <div class="creative-subitems" style="display: none;">
+                                    <div class="dropdown-subitem" onclick="addField('Creative ID')">Creative ID</div>
+                                    <div class="dropdown-subitem" onclick="addField('Creative Name')">Creative Name</div>
+                                    <div class="dropdown-subitem" onclick="addField('Creative Format')">Creative Format</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Added Fields Display -->
+                        <div class="added-fields">
+                            <div class="added-fields-title">Available Fields</div>
+                            <div class="field-list" id="fieldsList">
+                                <!-- Added fields will appear here -->
+                            </div>
                         </div>
                     </div>
 
@@ -942,6 +1099,312 @@
     <button class="save-btn">Save</button>
 
     <script>
+        // Toggle the fields dropdown
+        function toggleFieldsDropdown() {
+            const dropdown = document.getElementById('fieldsDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Toggle expand/collapse for object categories
+        function toggleExpand(element, category) {
+            const arrow = element.querySelector('.expand-arrow');
+            const subitems = document.querySelector(`.${category}-subitems`);
+            
+            if (subitems.style.display === 'none' || subitems.style.display === '') {
+                subitems.style.display = 'block';
+                arrow.classList.add('expanded');
+            } else {
+                subitems.style.display = 'none';
+                arrow.classList.remove('expanded');
+            }
+        }
+
+        // Add field to the available fields list and to ROWS section
+        function addField(fieldName) {
+            const fieldsList = document.getElementById('fieldsList');
+            
+            // Check if field already exists
+            if (fieldsList) {
+                const existingFields = fieldsList.querySelectorAll('.field-item');
+                for (let field of existingFields) {
+                    if (field.textContent === fieldName) {
+                        return; // Field already exists
+                    }
+                }
+                
+                // Create new field item
+                const fieldItem = document.createElement('div');
+                fieldItem.className = 'field-item';
+                fieldItem.textContent = fieldName;
+                fieldItem.onclick = function() {
+                    this.classList.toggle('selected');
+                };
+                
+                fieldsList.appendChild(fieldItem);
+            }
+            
+            // Add to ROWS section
+            addToRowsSection(fieldName);
+            
+            // Update pivot table if it's Campaign Name
+            if (fieldName === 'Campaign Name') {
+                updatePivotTableWithCampaignName();
+            }
+            
+            // Close dropdown after adding field
+            const dropdown = document.getElementById('fieldsDropdown');
+            if (dropdown) {
+                dropdown.classList.remove('show');
+            }
+        }
+
+        // Add field to ROWS (Dimensions) section
+        function addToRowsSection(fieldName) {
+            // Find the ROWS section drop zone more specifically
+            const panelSections = document.querySelectorAll('.panel-section');
+            let rowsDropZone = null;
+            
+            for (let section of panelSections) {
+                const sectionTitle = section.querySelector('.section-title');
+                if (sectionTitle && sectionTitle.textContent.includes('Rows')) {
+                    rowsDropZone = section.querySelector('.drop-zone');
+                    break;
+                }
+            }
+            
+            if (!rowsDropZone) return;
+            
+            // Check if field already exists in rows
+            const existingRows = rowsDropZone.querySelectorAll('.dropped-item');
+            for (let row of existingRows) {
+                const rowText = row.textContent.replace(/×/g, '').trim();
+                if (rowText === fieldName) {
+                    return; // Field already exists in rows
+                }
+            }
+            
+            // Create new dropped item
+            const droppedItem = document.createElement('div');
+            droppedItem.className = 'dropped-item';
+            droppedItem.innerHTML = `
+                ${fieldName}
+                <svg class="remove-item" viewBox="0 0 24 24" onclick="removeFromRows(this)">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            `;
+            
+            rowsDropZone.appendChild(droppedItem);
+            
+            // Ensure drop zone has items class
+            if (!rowsDropZone.classList.contains('has-items')) {
+                rowsDropZone.classList.add('has-items');
+            }
+        }
+
+        // Remove field from ROWS section
+        function removeFromRows(removeButton) {
+            const droppedItem = removeButton.parentElement;
+            const fieldName = droppedItem.textContent.replace(/×/g, '').trim();
+            droppedItem.remove();
+            
+            // Find the ROWS section drop zone
+            const panelSections = document.querySelectorAll('.panel-section');
+            let rowsDropZone = null;
+            
+            for (let section of panelSections) {
+                const sectionTitle = section.querySelector('.section-title');
+                if (sectionTitle && sectionTitle.textContent.includes('Rows')) {
+                    rowsDropZone = section.querySelector('.drop-zone');
+                    break;
+                }
+            }
+            
+            // Check if we need to remove has-items class
+            if (rowsDropZone && rowsDropZone.querySelectorAll('.dropped-item').length === 0) {
+                rowsDropZone.classList.remove('has-items');
+            }
+            
+            // Update pivot table if Campaign Name was removed
+            if (fieldName === 'Campaign Name') {
+                updatePivotTableWithoutCampaignName();
+            }
+        }
+
+        // Update pivot table to show Campaign Name breakdown
+        function updatePivotTableWithCampaignName() {
+            const tableBody = document.querySelector('.pivot-table tbody');
+            tableBody.innerHTML = `
+                <tr>
+                    <td style="padding-left: 8px;">▼ 11 May 2025</td>
+                    <td class="number-cell">22,120</td>
+                    <td class="number-cell">175</td>
+                    <td class="number-cell">$1,425.00</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 24px; color: #666;">AMER_MX_MXMC_MC...</td>
+                    <td class="number-cell">2,370</td>
+                    <td class="number-cell">18</td>
+                    <td class="number-cell">$145.00</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 24px; color: #666;">EMEA_DE_DEBE_BE_N...</td>
+                    <td class="number-cell">12,230</td>
+                    <td class="number-cell">97</td>
+                    <td class="number-cell">$780.00</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 24px; color: #666;">AMER_CA_MB_MB_N...</td>
+                    <td class="number-cell">7,520</td>
+                    <td class="number-cell">60</td>
+                    <td class="number-cell">$500.00</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 8px;">▼ 10 May 2025</td>
+                    <td class="number-cell">26,990</td>
+                    <td class="number-cell">214</td>
+                    <td class="number-cell">$1,715.00</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 24px; color: #666;">APAC_JP_JPTK_TK_NT...</td>
+                    <td class="number-cell">13,340</td>
+                    <td class="number-cell">106</td>
+                    <td class="number-cell">$845.00</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 24px; color: #666;">EMEA_FR_FRPA_PA_N...</td>
+                    <td class="number-cell">2,700</td>
+                    <td class="number-cell">21</td>
+                    <td class="number-cell">$170.00</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 24px; color: #666;">AMER_US_USNY_NY_...</td>
+                    <td class="number-cell">10,950</td>
+                    <td class="number-cell">87</td>
+                    <td class="number-cell">$700.00</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 8px;">▼ 09 May 2025</td>
+                    <td class="number-cell">4,117</td>
+                    <td class="number-cell">31</td>
+                    <td class="number-cell">$250.00</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 24px; color: #666;">LATAM_BR_BRSP_SP_...</td>
+                    <td class="number-cell">1,120</td>
+                    <td class="number-cell">8</td>
+                    <td class="number-cell">$65.00</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 24px; color: #666;">AMER_CA_CATO_TR_...</td>
+                    <td class="number-cell">2,300</td>
+                    <td class="number-cell">18</td>
+                    <td class="number-cell">$145.00</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 24px; color: #666;">APAC_AU_AUSY_SY_N...</td>
+                    <td class="number-cell">697</td>
+                    <td class="number-cell">5</td>
+                    <td class="number-cell">$40.00</td>
+                </tr>
+                <tr>
+                    <td style="padding-left: 8px;">▼ 08 May 2025</td>
+                    <td class="number-cell">20,300</td>
+                    <td class="number-cell">161</td>
+                    <td class="number-cell">$1,315.00</td>
+                </tr>
+                <tr class="total-row">
+                    <td style="padding-left: 8px;"><strong>Total</strong></td>
+                    <td class="number-cell"><strong>132,374</strong></td>
+                    <td class="number-cell"><strong>1,044</strong></td>
+                    <td class="number-cell"><strong>$8,445.00</strong></td>
+                </tr>
+            `;
+            
+            // Update table header
+            const tableHead = document.querySelector('.pivot-table thead tr');
+            tableHead.innerHTML = `
+                <th>Day</th>
+                <th>Campaign Name</th>
+                <th>Impressions</th>
+                <th>Clicks</th>
+                <th>Media Cost</th>
+            `;
+        }
+
+        // Revert pivot table to original view
+        function updatePivotTableWithoutCampaignName() {
+            const tableBody = document.querySelector('.pivot-table tbody');
+            tableBody.innerHTML = `
+                <tr>
+                    <td>8 Jul 2025</td>
+                    <td class="number-cell">22,103</td>
+                    <td class="number-cell">175</td>
+                    <td class="number-cell">$1,425.06</td>
+                </tr>
+                <tr>
+                    <td>7 Jul 2025</td>
+                    <td class="number-cell">26,393</td>
+                    <td class="number-cell">216</td>
+                    <td class="number-cell">$1,715.60</td>
+                </tr>
+                <tr>
+                    <td>6 Jul 2025</td>
+                    <td class="number-cell">4,117</td>
+                    <td class="number-cell">31</td>
+                    <td class="number-cell">$268.06</td>
+                </tr>
+                <tr>
+                    <td>5 Jul 2025</td>
+                    <td class="number-cell">25,300</td>
+                    <td class="number-cell">161</td>
+                    <td class="number-cell">$1,315.60</td>
+                </tr>
+                <tr>
+                    <td>4 Jul 2025</td>
+                    <td class="number-cell">18,243</td>
+                    <td class="number-cell">158</td>
+                    <td class="number-cell">$1,166.06</td>
+                </tr>
+                <tr>
+                    <td>3 Jul 2025</td>
+                    <td class="number-cell">12,707</td>
+                    <td class="number-cell">129</td>
+                    <td class="number-cell">$826.06</td>
+                </tr>
+                <tr>
+                    <td>2 Jul 2025</td>
+                    <td class="number-cell">15,079</td>
+                    <td class="number-cell">82</td>
+                    <td class="number-cell">$885.06</td>
+                </tr>
+                <tr class="total-row">
+                    <td><strong>Total</strong></td>
+                    <td class="number-cell"><strong>124,242</strong></td>
+                    <td class="number-cell"><strong>952</strong></td>
+                    <td class="number-cell"><strong>$7,601.50</strong></td>
+                </tr>
+            `;
+            
+            // Update table header
+            const tableHead = document.querySelector('.pivot-table thead tr');
+            tableHead.innerHTML = `
+                <th>Date</th>
+                <th>Impressions</th>
+                <th>Clicks</th>
+                <th>Spend</th>
+            `;
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('fieldsDropdown');
+            const addIcon = document.querySelector('.add-icon');
+            
+            if (!dropdown.contains(event.target) && event.target !== addIcon) {
+                dropdown.classList.remove('show');
+            }
+        });
+
         function goBack() {
             // In a real app, this would navigate back to the pipeline list
             location.reload();
