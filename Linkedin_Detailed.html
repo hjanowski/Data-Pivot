@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Intelligence - LinkedIn Ads Pipeline</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #080707;
+        }
+
+        /* Header and Navigation */
+        .header {
+            height: 40px;
+            background: white;
+            border-bottom: 1px solid #dddbda;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            padding-left: 16px;
+            gap: 8px;
+        }
+
+        .grid-logo {
+            width: 20px;
+            height: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 2px;
+        }
+
+        .grid-dot {
+            width: 4px;
+            height: 4px;
+            background: #706e6b;
+            border-radius: 50%;
+        }
+
+        .header-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #03234d;
+        }
+
+        .header-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .nav-tab {
+            font-size: 12px;
+            color: #03234d;
+            text-decoration: none;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-tab:hover {
+            color: #0550d9;
+        }
+
+        .nav-tab.active {
+            color: #0550d9;
+            border-bottom-color: #0550d9;
+            font-weight: bold;
+        }
+
+        .nav-tab svg {
+            width: 12px;
+            height: 12px;
+            fill: currentColor;
+        }
+
+        .header-right {
+            padding-right: 16px;
+        }
+
+        .edit-icon {
+            width: 16px;
+            height: 16px;
+            fill: #0550d9;
+            cursor: pointer;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+            margin-top: 40px;
+            min-height: calc(100vh - 40px);
+        }
+
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-radius: 8px;
+            margin: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-section {
+            padding: 0;
+        }
+
+        .sidebar-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #080707;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .sidebar-item {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #080707;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .sidebar-item:hover {
+            color: #0550d9;
+            background: #f8f9fa;
+        }
+
+        .sidebar-item.active {
+            color: #0550d9;
+            font-weight: 600;
+            background: #e3f2fd;
+            border-left: 4px solid #0550d9;
+            padding-left: 12px;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 24px;
+            background: #f8f9fa;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            font-size: 12px;
+            color: #706e6b;
+            margin-bottom: 16px;
+        }
+
+        .breadcrumb a {
+            color: #0550d9;
+            text-decoration: none;
+        }
+
+        /* Pipeline Header */
+        .pipeline-header {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .pipeline-header-top {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .pipeline-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .pipeline-icon {
+            width: 40px;
+            height: 40px;
+            background: #0f7cad;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pipeline-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .pipeline-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #080707;
+        }
+
+        .pipeline-header-right {
+            display: flex;
+            gap: 12px;
+        }
+
+        .header-btn {
+            background: white;
+            border: 1px solid #dddbda;
+            color: #0550d9;
+            font-weight: 500;
+            font-size: 12px;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .header-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        /* Pipeline Info Grid */
+        .pipeline-info {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 11px;
+            color: #706e6b;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-size: 12px;
+            color: #080707;
+        }
+
+        .status-active {
+            color: #036764;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-icon {
+            width: 12px;
+            height: 12px;
+            background: #036764;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-icon svg {
+            width: 8px;
+            height: 8px;
+            fill: white;
+        }
+
+        /* Pipeline Tabs */
+        .pipeline-tabs {
+            display: flex;
+            gap: 32px;
+            border-bottom: 1px solid #dddbda;
+            margin-bottom: 24px;
+        }
+
+        .pipeline-tab {
+            font-size: 12px;
+            color: #706e6b;
+            text-decoration: none;
+            padding: 12px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .pipeline-tab:hover {
+            color: #0550d9;
+        }
+
+        .pipeline-tab.active {
+            color: #0550d9;
+            border-bottom-color: #0550d9;
+            font-weight: 600;
+        }
+
+        /* Data Pivot Section */
+        .data-pivot-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .data-pivot-icon {
+            width: 24px;
+            height: 24px;
+            background: #0f7cad;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .data-pivot-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: white;
+        }
+
+        .data-pivot-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #080707;
+        }
+
+        .pivot-name-input {
+            flex: 1;
+            margin-left: auto;
+            max-width: 200px;
+        }
+
+        .pivot-name-input input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #dddbda;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* Data Pivot Layout */
+        .data-pivot-container {
+            display: flex;
+            gap: 24px;
+            height: calc(100vh - 300px);
+        }
+
+        .pivot-left-panel {
+            width: 300px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .pivot-right-panel {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pivot-table-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #dddbda;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pivot-table-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #080707;
+        }
+
+        .pivot-table-wrapper {
+            flex: 1;
+            overflow: auto;
+            padding: 24px;
+        }
+
+        /* Left Panel Sections */
+        .panel-section {
+            margin-bottom: 32px;
+        }
+
+        .panel-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f3f2f2;
+        }
+
+        .section-icon {
+            width: 16px;
+            height: 16px;
+            fill: #706e6b;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #080707;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .add-icon {
+            width: 14px;
+            height: 14px;
+            fill: #0176d3;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        /* Field Lists */
+        .field-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field-item {
+            background: #f8f9fa;
+            border: 1px solid #dddbda;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 11px;
+            color: #080707;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .field-item:hover {
+            background: #e3f2fd;
+            border-color: #0550d9;
+        }
+
+        .field-item.selected {
+            background: #e3f2fd;
+            border-color: #0550d9;
+            color: #0550d9;
+            font-weight: 500;
+        }
+
+        /* Drop Zones */
+        .drop-zone {
+            min-height: 60px;
+            border: 2px dashed #dddbda;
+            border-radius: 4px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: #fafafa;
+        }
+
+        .drop-zone.has-items {
+            border-style: solid;
+            background: white;
+        }
+
+        .drop-zone-label {
+            font-size: 10px;
+            color: #706e6b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .dropped-item {
+            background: #e3f2fd;
+            border: 1px solid #0550d9;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 11px;
+            color: #0550d9;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .remove-item {
+            width: 12px;
+            height: 12px;
+            fill: #0550d9;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .remove-item:hover {
+            opacity: 1;
+        }
+
+        /* Filters Section */
+        .filters-section {
+            margin-top: 24px;
+        }
+
+        .filters-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .filters-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #080707;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .expand-icon {
+            width: 14px;
+            height: 14px;
+            fill: #706e6b;
+            cursor: pointer;
+        }
+
+        /* Date Range */
+        .date-range {
+            font-size: 11px;
+            color: #706e6b;
+            margin-bottom: 16px;
+        }
+
+        /* Pivot Table */
+        .pivot-table-container {
+            width: 100%;
+        }
+
+        .pivot-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .pivot-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: #706e6b;
+            border-bottom: 1px solid #dddbda;
+        }
+
+        .pivot-table td {
+            padding: 12px;
+            font-size: 12px;
+            color: #080707;
+            border-bottom: 1px solid #f3f2f2;
+        }
+
+        .pivot-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .number-cell {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .total-row {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .total-row td {
+            border-top: 2px solid #dddbda;
+        }
+
+        /* Save Button */
+        .save-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #0550d9;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(5, 80, 217, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .save-btn:hover {
+            background: #0446c7;
+            box-shadow: 0 4px 12px rgba(5, 80, 217, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="grid-logo">
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+            </div>
+            <div class="header-title">Marketing Intelligence</div>
+        </div>
+        <div class="header-center">
+            <div class="nav-tabs">
+                <a href="#" class="nav-tab">Home</a>
+                <a href="#" class="nav-tab active">
+                    Data Management
+                    <svg viewBox="0 0 24 24">
+                        <path d="M7 10l5 5 5-5z"/>
+                    </svg>
+                </a>
+                <a href="#" class="nav-tab">Planning</a>
+                <a href="#" class="nav-tab">Analytics</a>
+            </div>
+        </div>
+        <div class="header-right">
+            <svg class="edit-icon" viewBox="0 0 24 24">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Data Management</div>
+                <div class="sidebar-item active">Data Pipelines</div>
+                <div class="sidebar-item">Data Enrichment</div>
+                <div class="sidebar-item">Pattern</div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <a href="#" onclick="goBack()">Data Pipeline List</a> > Pipeline Page
+            </div>
+
+            <!-- Pipeline Header -->
+            <div class="pipeline-header">
+                <div class="pipeline-header-top">
+                    <div class="pipeline-header-left">
+                        <div class="pipeline-icon">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/>
+                            </svg>
+                        </div>
+                        <div class="pipeline-title">LinkedIn Ads 691461358</div>
+                    </div>
+                    <div class="pipeline-header-right">
+                        <button class="header-btn">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                            </svg>
+                            Reprocess
+                        </button>
+                        <button class="header-btn">
+                            Edit Attributes
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pipeline Info -->
+                <div class="pipeline-info">
+                    <div class="info-item">
+                        <div class="info-label">Connector</div>
+                        <div class="info-value">LinkedIn Ads</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Name</div>
+                        <div class="info-value">LinkedIn Ads 691461358</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Data Space</div>
+                        <div class="info-value">Default</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div class="info-value status-active">
+                            <div class="status-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Active
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Created On</div>
+                        <div class="info-value">10/12/2024, 04:30 AM</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pipeline Tabs -->
+            <div class="pipeline-tabs">
+                <a href="#" class="pipeline-tab">Details</a>
+                <a href="#" class="pipeline-tab">Process Log</a>
+                <a href="#" class="pipeline-tab">Data Sets</a>
+                <a href="#" class="pipeline-tab active">Data Pivot</a>
+            </div>
+
+            <!-- Data Pivot Content -->
+            <div class="data-pivot-header">
+                <div class="data-pivot-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 3H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1zM9 9H5V5h4v4zm11-6h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1zm-1 6h-4V5h4v4zM10 13H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1zm-1 6H5v-4h4v4zm11-6h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1zm-1 6h-4v-4h4v4z"/>
+                    </svg>
+                </div>
+                <div class="data-pivot-title">Data Pivot</div>
+                <div class="pivot-name-input">
+                    <input type="text" placeholder="Pivot Name..." value="">
+                </div>
+            </div>
+
+            <!-- Data Pivot Layout -->
+            <div class="data-pivot-container">
+                <!-- Left Configuration Panel -->
+                <div class="pivot-left-panel">
+                    <!-- Date Range -->
+                    <div class="date-range">Jul 2, 2025 - Jul 8, 2025</div>
+                    
+                    <!-- Fields Section -->
+                    <div class="panel-section">
+                        <div class="section-header">
+                            <svg class="section-icon" viewBox="0 0 24 24">
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                            </svg>
+                            <span class="section-title">Fields</span>
+                            <svg class="add-icon" viewBox="0 0 24 24">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Rows (Dimensions) -->
+                    <div class="panel-section">
+                        <div class="section-header">
+                            <svg class="section-icon" viewBox="0 0 24 24">
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                            </svg>
+                            <span class="section-title">Rows (Dimensions)</span>
+                        </div>
+                        <div class="drop-zone has-items">
+                            <div class="dropped-item">
+                                Date
+                                <svg class="remove-item" viewBox="0 0 24 24">
+                                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Values (Measurements) -->
+                    <div class="panel-section">
+                        <div class="section-header">
+                            <svg class="section-icon" viewBox="0 0 24 24">
+                                <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/>
+                            </svg>
+                            <span class="section-title">Values (Measurements)</span>
+                        </div>
+                        <div class="drop-zone has-items">
+                            <div class="dropped-item">
+                                Impressions
+                                <svg class="remove-item" viewBox="0 0 24 24">
+                                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                                </svg>
+                            </div>
+                            <div class="dropped-item">
+                                Clicks
+                                <svg class="remove-item" viewBox="0 0 24 24">
+                                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                                </svg>
+                            </div>
+                            <div class="dropped-item">
+                                Spend
+                                <svg class="remove-item" viewBox="0 0 24 24">
+                                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters Section -->
+                    <div class="filters-section">
+                        <div class="filters-header">
+                            <span class="filters-title">Filters</span>
+                            <svg class="expand-icon" viewBox="0 0 24 24">
+                                <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+                            </svg>
+                        </div>
+                        <div class="drop-zone">
+                            <div class="drop-zone-label">Drop fields here to filter</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Pivot Table Panel -->
+                <div class="pivot-right-panel">
+                    <div class="pivot-table-header">
+                        <div class="pivot-table-title">Pivot Table Settings</div>
+                    </div>
+                    <div class="pivot-table-wrapper">
+                        <div class="pivot-table-container">
+                            <table class="pivot-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Impressions</th>
+                                        <th>Clicks</th>
+                                        <th>Spend</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>8 Jul 2025</td>
+                                        <td class="number-cell">22,103</td>
+                                        <td class="number-cell">175</td>
+                                        <td class="number-cell">$1,425.06</td>
+                                    </tr>
+                                    <tr>
+                                        <td>7 Jul 2025</td>
+                                        <td class="number-cell">26,393</td>
+                                        <td class="number-cell">216</td>
+                                        <td class="number-cell">$1,715.60</td>
+                                    </tr>
+                                    <tr>
+                                        <td>6 Jul 2025</td>
+                                        <td class="number-cell">4,117</td>
+                                        <td class="number-cell">31</td>
+                                        <td class="number-cell">$268.06</td>
+                                    </tr>
+                                    <tr>
+                                        <td>5 Jul 2025</td>
+                                        <td class="number-cell">25,300</td>
+                                        <td class="number-cell">161</td>
+                                        <td class="number-cell">$1,315.60</td>
+                                    </tr>
+                                    <tr>
+                                        <td>4 Jul 2025</td>
+                                        <td class="number-cell">18,243</td>
+                                        <td class="number-cell">158</td>
+                                        <td class="number-cell">$1,166.06</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3 Jul 2025</td>
+                                        <td class="number-cell">12,707</td>
+                                        <td class="number-cell">129</td>
+                                        <td class="number-cell">$826.06</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2 Jul 2025</td>
+                                        <td class="number-cell">15,079</td>
+                                        <td class="number-cell">82</td>
+                                        <td class="number-cell">$885.06</td>
+                                    </tr>
+                                    <tr class="total-row">
+                                        <td><strong>Total</strong></td>
+                                        <td class="number-cell"><strong>124,242</strong></td>
+                                        <td class="number-cell"><strong>952</strong></td>
+                                        <td class="number-cell"><strong>$7,601.50</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Save Button -->
+    <button class="save-btn">Save</button>
+
+    <script>
+        function goBack() {
+            // In a real app, this would navigate back to the pipeline list
+            location.reload();
+        }
+
+        // Add some interactivity for demo purposes
+        document.querySelectorAll('.pipeline-tab').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.pipeline-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
