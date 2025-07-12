@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Intelligence - Data Pipelines</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #080707;
+        }
+
+        /* Header and Navigation */
+        .header {
+            height: 40px;
+            background: white;
+            border-bottom: 1px solid #dddbda;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            padding-left: 16px;
+            gap: 8px;
+        }
+
+        .grid-logo {
+            width: 20px;
+            height: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 2px;
+        }
+
+        .grid-dot {
+            width: 4px;
+            height: 4px;
+            background: #706e6b;
+            border-radius: 50%;
+        }
+
+        .header-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #03234d;
+        }
+
+        .header-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .nav-tab {
+            font-size: 12px;
+            color: #03234d;
+            text-decoration: none;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tab:hover {
+            color: #0550d9;
+        }
+
+        .nav-tab.active {
+            color: #0550d9;
+            border-bottom-color: #0550d9;
+            font-weight: bold;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+            margin-top: 40px;
+            min-height: calc(100vh - 40px);
+        }
+
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-radius: 8px;
+            margin: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-section {
+            padding: 0;
+        }
+
+        .sidebar-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #080707;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .sidebar-item {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #080707;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .sidebar-item:hover {
+            color: #0550d9;
+            background: #f8f9fa;
+        }
+
+        .sidebar-item.active {
+            color: #0550d9;
+            font-weight: 600;
+            background: #e3f2fd;
+            border-left: 4px solid #0550d9;
+            padding-left: 12px;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 24px;
+            background: #f8f9fa;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .content-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-icon {
+            width: 40px;
+            height: 40px;
+            background: #0f7cad;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .page-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .page-title-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #080707;
+        }
+
+        .page-subtitle {
+            font-size: 12px;
+            color: #706e6b;
+        }
+
+        .content-header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .new-pipeline-btn {
+            background: white;
+            border: 1px solid #dddbda;
+            color: #0550d9;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .new-pipeline-btn:hover {
+            background: #f8f9fa;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .search-bar {
+            width: 240px;
+            padding: 8px 12px;
+            border: 1px solid #dddbda;
+            border-radius: 4px;
+            font-size: 12px;
+            background: white;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #0176d3;
+        }
+
+        /* Data Table */
+        .data-table {
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-header {
+            background: #f3f2f2;
+            display: grid;
+            grid-template-columns: 40px 200px 100px 150px 80px 120px 120px 120px 120px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #dddbda;
+        }
+
+        .table-header-cell {
+            font-size: 11px;
+            font-weight: 600;
+            color: #706e6b;
+            letter-spacing: 0.5px;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 40px 200px 100px 150px 80px 120px 120px 120px 120px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f3f2f2;
+            transition: background 0.2s ease;
+        }
+
+        .table-row:hover {
+            background: #f8f9fa;
+        }
+
+        .table-cell {
+            font-size: 12px;
+            color: #080707;
+            display: flex;
+            align-items: center;
+        }
+
+        .pipeline-link {
+            color: #0550d9;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .pipeline-link:hover {
+            text-decoration: underline;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+        }
+
+        .status-icon {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-icon.success {
+            background: #036764;
+        }
+
+        .status-icon.failed {
+            background: transparent;
+            border: 3px solid #b60554;
+            position: relative;
+        }
+
+        .status-icon.failed::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 3px;
+            background: #b60554;
+            transform: rotate(45deg);
+        }
+
+        .status-icon svg {
+            width: 8px;
+            height: 8px;
+            fill: white;
+        }
+
+        .timestamp {
+            color: #706e6b;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="grid-logo">
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+                <div class="grid-dot"></div>
+            </div>
+            <div class="header-title">Marketing Intelligence</div>
+        </div>
+        <div class="header-center">
+            <div class="nav-tabs">
+                <a href="#" class="nav-tab">Home</a>
+                <a href="#" class="nav-tab active">Data Management</a>
+                <a href="#" class="nav-tab">Planning</a>
+                <a href="#" class="nav-tab">Dashboards</a>
+                <a href="#" class="nav-tab">Reports</a>
+                <a href="#" class="nav-tab">Segment Intelligence</a>
+                <a href="#" class="nav-tab">Semantic Layer</a>
+                <a href="#" class="nav-tab">Query Editor</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Data Management</div>
+                <div class="sidebar-item active">Data Pipelines</div>
+                <div class="sidebar-item">Data Enrichment</div>
+                <div class="sidebar-item">Patterns</div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <!-- Content Header -->
+            <div class="content-header">
+                <div class="content-header-left">
+                    <div class="page-icon">
+                        <svg viewBox="0 0 24 24">
+                            <!-- Vertical empty rectangle -->
+                            <rect x="10" y="4" width="4" height="6" fill="none" stroke="white" stroke-width="1"/>
+                            <!-- Three lines extending from bottom -->
+                            <line x1="8" y1="10" x2="8" y2="16" stroke="white" stroke-width="1"/>
+                            <line x1="12" y1="10" x2="12" y2="16" stroke="white" stroke-width="1"/>
+                            <line x1="16" y1="10" x2="16" y2="16" stroke="white" stroke-width="1"/>
+                            <!-- Three circles at the end of lines -->
+                            <circle cx="8" cy="18" r="1.5" fill="white"/>
+                            <circle cx="12" cy="18" r="1.5" fill="white"/>
+                            <circle cx="16" cy="18" r="1.5" fill="white"/>
+                        </svg>
+                    </div>
+                    <div class="page-title-group">
+                        <div class="page-title">Data Pipelines</div>
+                        <div class="page-subtitle">36 items</div>
+                    </div>
+                </div>
+                <div class="content-header-right">
+                    <button class="new-pipeline-btn">New Pipeline</button>
+                    <input type="text" class="search-bar" placeholder="Search Pipelines...">
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="data-table">
+                <div class="table-header">
+                    <div class="table-header-cell">#</div>
+                    <div class="table-header-cell">Name</div>
+                    <div class="table-header-cell">Data Space</div>
+                    <div class="table-header-cell">Source</div>
+                    <div class="table-header-cell">Status</div>
+                    <div class="table-header-cell">Last Run Status</div>
+                    <div class="table-header-cell">Last Run</div>
+                    <div class="table-header-cell">Next Run</div>
+                    <div class="table-header-cell">Last Data Date</div>
+                </div>
+
+                <!-- Table Rows -->
+                <div class="table-row">
+                    <div class="table-cell">1</div>
+                    <div class="table-cell">
+                        <a href="#" class="pipeline-link">Customer Journey 143078924</a>
+                    </div>
+                    <div class="table-cell">Default</div>
+                    <div class="table-cell">Total Connect</div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Active
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Success
+                        </div>
+                    </div>
+                    <div class="table-cell timestamp">2 Hours Ago</div>
+                    <div class="table-cell timestamp">Tomorrow 6:00 AM</div>
+                    <div class="table-cell timestamp">Jul 12, 2025</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell">2</div>
+                    <div class="table-cell">
+                        <a href="#" class="pipeline-link">LinkedinAds 691461358</a>
+                    </div>
+                    <div class="table-cell">Default</div>
+                    <div class="table-cell">LinkedIn Ads For EMI</div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Active
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Success
+                        </div>
+                    </div>
+                    <div class="table-cell timestamp">4 Hours Ago</div>
+                    <div class="table-cell timestamp">Tomorrow 8:00 AM</div>
+                    <div class="table-cell timestamp">Jul 12, 2025</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell">3</div>
+                    <div class="table-cell">
+                        <a href="#" class="pipeline-link">Meta Ads 691450472</a>
+                    </div>
+                    <div class="table-cell">Default</div>
+                    <div class="table-cell">Meta Ads</div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Active
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon failed"></div>
+                            Failed
+                        </div>
+                    </div>
+                    <div class="table-cell timestamp">6 Hours Ago</div>
+                    <div class="table-cell timestamp">Tomorrow 10:00 AM</div>
+                    <div class="table-cell timestamp">Jul 11, 2025</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell">4</div>
+                    <div class="table-cell">
+                        <a href="#" class="pipeline-link">Email Performance 663750753</a>
+                    </div>
+                    <div class="table-cell">Default</div>
+                    <div class="table-cell">Total Connect</div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Active
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Success
+                        </div>
+                    </div>
+                    <div class="table-cell timestamp">1 Hour Ago</div>
+                    <div class="table-cell timestamp">Tomorrow 12:00 PM</div>
+                    <div class="table-cell timestamp">Jul 12, 2025</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell">5</div>
+                    <div class="table-cell">
+                        <a href="#" class="pipeline-link">Social Media 642891337</a>
+                    </div>
+                    <div class="table-cell">Default</div>
+                    <div class="table-cell">Meta Ads</div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Active
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Success
+                        </div>
+                    </div>
+                    <div class="table-cell timestamp">3 Hours Ago</div>
+                    <div class="table-cell timestamp">Tomorrow 2:00 PM</div>
+                    <div class="table-cell timestamp">Jul 12, 2025</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell">6</div>
+                    <div class="table-cell">
+                        <a href="#" class="pipeline-link">Website Traffic 598234619</a>
+                    </div>
+                    <div class="table-cell">Default</div>
+                    <div class="table-cell">Total Connect</div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Active
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Success
+                        </div>
+                    </div>
+                    <div class="table-cell timestamp">5 Hours Ago</div>
+                    <div class="table-cell timestamp">Tomorrow 4:00 PM</div>
+                    <div class="table-cell timestamp">Jul 12, 2025</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell">7</div>
+                    <div class="table-cell">
+                        <a href="#" class="pipeline-link">Lead Scoring 775291048</a>
+                    </div>
+                    <div class="table-cell">Default</div>
+                    <div class="table-cell">LinkedIn Ads For EMI</div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Active
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Success
+                        </div>
+                    </div>
+                    <div class="table-cell timestamp">7 Hours Ago</div>
+                    <div class="table-cell timestamp">Tomorrow 6:00 PM</div>
+                    <div class="table-cell timestamp">Jul 12, 2025</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell">8</div>
+                    <div class="table-cell">
+                        <a href="#" class="pipeline-link">Segmentation 429876543</a>
+                    </div>
+                    <div class="table-cell">Default</div>
+                    <div class="table-cell">Total Connect</div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Active
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Success
+                        </div>
+                    </div>
+                    <div class="table-cell timestamp">8 Hours Ago</div>
+                    <div class="table-cell timestamp">Tomorrow 8:00 PM</div>
+                    <div class="table-cell timestamp">Jul 12, 2025</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell">9</div>
+                    <div class="table-cell">
+                        <a href="#" class="pipeline-link">ROI Attribution 856372914</a>
+                    </div>
+                    <div class="table-cell">Default</div>
+                    <div class="table-cell">Meta Ads</div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Active
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Success
+                        </div>
+                    </div>
+                    <div class="table-cell timestamp">9 Hours Ago</div>
+                    <div class="table-cell timestamp">Tomorrow 10:00 PM</div>
+                    <div class="table-cell timestamp">Jul 11, 2025</div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell">10</div>
+                    <div class="table-cell">
+                        <a href="#" class="pipeline-link">Conversion Funnel 123456789</a>
+                    </div>
+                    <div class="table-cell">Default</div>
+                    <div class="table-cell">Total Connect</div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Active
+                        </div>
+                    </div>
+                    <div class="table-cell">
+                        <div class="status-badge">
+                            <div class="status-icon success">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                </svg>
+                            </div>
+                            Success
+                        </div>
+                    </div>
+                    <div class="table-cell timestamp">10 Hours Ago</div>
+                    <div class="table-cell timestamp">Jul 13, 12:00 AM</div>
+                    <div class="table-cell timestamp">Jul 11, 2025</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactivity
+    </script>
+</body>
+</html>
