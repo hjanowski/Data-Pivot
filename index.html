@@ -285,6 +285,7 @@
             color: #0550d9;
             text-decoration: none;
             font-weight: bold;
+            cursor: pointer;
         }
 
         .pipeline-link:hover {
@@ -336,6 +337,15 @@
             color: #706e6b;
             font-size: 11px;
         }
+
+        /* Hide content initially */
+        .page-content {
+            display: block;
+        }
+
+        .page-content.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -381,8 +391,8 @@
             </div>
         </div>
 
-        <!-- Content Area -->
-        <div class="content">
+        <!-- Pipeline List Content -->
+        <div class="content page-content" id="pipeline-list">
             <!-- Content Header -->
             <div class="content-header">
                 <div class="content-header-left">
@@ -461,7 +471,7 @@
                 <div class="table-row">
                     <div class="table-cell">2</div>
                     <div class="table-cell">
-                        <a href="#" class="pipeline-link">LinkedinAds 691461358</a>
+                        <a href="#" class="pipeline-link" data-pipeline="linkedin">LinkedinAds 691461358</a>
                     </div>
                     <div class="table-cell">Default</div>
                     <div class="table-cell">LinkedIn Ads For EMI</div>
@@ -743,10 +753,18 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        // Add interactivity
-    </script>
-</body>
-</html>
+        <!-- LinkedIn Detail Content -->
+        <div class="content page-content hidden" id="linkedin-detail">
+            <!-- Breadcrumb -->
+            <div style="font-size: 12px; color: #706e6b; margin-bottom: 16px;">
+                <a href="#" style="color: #0550d9; text-decoration: none;" onclick="showPipelineList()">Data Pipeline List</a> > Pipeline Page
+            </div>
+
+            <!-- Pipeline Header -->
+            <div style="background: white; padding: 24px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+                    <div style="display: flex; align-items: center; gap: 16px; flex: 1;">
+                        <div style="width: 40px; height: 40px; background: #0f7cad; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <svg style="width: 24px; height: 24px; fill: white;" viewBox="0 0 24 24">
+                                <circle cx="12" cy="
